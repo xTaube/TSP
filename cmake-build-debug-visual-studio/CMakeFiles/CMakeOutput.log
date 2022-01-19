@@ -266,36 +266,36 @@ Parsed CUDA nvcc include information from above output:
 Determining if the CUDA compiler works passed with the following output:
 Change Dir: C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/CMakeTmp
 
-Run Build Command(s):nmake /nologo cmTC_2d057\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_2d057.dir\build.make /nologo -L                  CMakeFiles\cmTC_2d057.dir\build
-Building CUDA object CMakeFiles/cmTC_2d057.dir/main.cu.obj
-	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd -x cu -c C:\Users\Michal\CLionProjects\TSP\cmake-build-debug-visual-studio\CMakeFiles\CMakeTmp\main.cu -o CMakeFiles\cmTC_2d057.dir\main.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_2d057.dir\,-FS
+Run Build Command(s):nmake /nologo cmTC_7fec6\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_7fec6.dir\build.make /nologo -L                  CMakeFiles\cmTC_7fec6.dir\build
+Building CUDA object CMakeFiles/cmTC_7fec6.dir/main.cu.obj
+	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd -x cu -c C:\Users\Michal\CLionProjects\TSP\cmake-build-debug-visual-studio\CMakeFiles\CMakeTmp\main.cu -o CMakeFiles\cmTC_7fec6.dir\main.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_7fec6.dir\,-FS
 main.cu
-Linking CUDA executable cmTC_2d057.exe
-	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_2d057.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_2d057.dir\main.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm867D.tmp
-   Trwa tworzenie biblioteki cmTC_2d057.lib i obiektu cmTC_2d057.exp
-   Trwa tworzenie biblioteki cmTC_2d057.lib i obiektu cmTC_2d057.exp
+Linking CUDA executable cmTC_7fec6.exe
+	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_7fec6.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_7fec6.dir\main.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm7D99.tmp
+   Trwa tworzenie biblioteki cmTC_7fec6.lib i obiektu cmTC_7fec6.exp
+   Trwa tworzenie biblioteki cmTC_7fec6.lib i obiektu cmTC_7fec6.exp
 
 
 
 Detecting CUDA compiler ABI info compiled with the following output:
 Change Dir: C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/CMakeTmp
 
-Run Build Command(s):nmake /nologo cmTC_0f82d\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_0f82d.dir\build.make /nologo -L                  CMakeFiles\cmTC_0f82d.dir\build
-Building CUDA object CMakeFiles/cmTC_0f82d.dir/CMakeCUDACompilerABI.cu.obj
-	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd   -Xcompiler=-v -x cu -c "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\share\cmake-3.17\Modules\CMakeCUDACompilerABI.cu" -o CMakeFiles\cmTC_0f82d.dir\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_0f82d.dir\,-FS
+Run Build Command(s):nmake /nologo cmTC_481bc\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_481bc.dir\build.make /nologo -L                  CMakeFiles\cmTC_481bc.dir\build
+Building CUDA object CMakeFiles/cmTC_481bc.dir/CMakeCUDACompilerABI.cu.obj
+	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd   -Xcompiler=-v -x cu -c "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\share\cmake-3.17\Modules\CMakeCUDACompilerABI.cu" -o CMakeFiles\cmTC_481bc.dir\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_481bc.dir\,-FS
 cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"
 CMakeCUDACompilerABI.cu
 cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"
 CMakeCUDACompilerABI.cu
 CMakeCUDACompilerABI.cu
 cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"
-Linking CUDA executable cmTC_0f82d.exe
-	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_0f82d.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_0f82d.dir\CMakeCUDACompilerABI.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm97D2.tmp
+Linking CUDA executable cmTC_481bc.exe
+	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_481bc.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_481bc.dir\CMakeCUDACompilerABI.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm8E71.tmp
 LINK : warning LNK4044: nierozpoznana opcja "/v"; zignorowano
-   Trwa tworzenie biblioteki cmTC_0f82d.lib i obiektu cmTC_0f82d.exp
+   Trwa tworzenie biblioteki cmTC_481bc.lib i obiektu cmTC_481bc.exp
 LINK : warning LNK4044: nierozpoznana opcja "/v"; zignorowano
 LINK : warning LNK4044: nierozpoznana opcja "/v"; zignorowano
-   Trwa tworzenie biblioteki cmTC_0f82d.lib i obiektu cmTC_0f82d.exp
+   Trwa tworzenie biblioteki cmTC_481bc.lib i obiektu cmTC_481bc.exp
 
 
 
@@ -307,25 +307,25 @@ Parsed CUDA implicit link information from above output:
   link line regex: [^( *|.*[/\])(link\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):nmake /nologo cmTC_0f82d\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_0f82d.dir\build.make /nologo -L                  CMakeFiles\cmTC_0f82d.dir\build]
-  ignore line: [Building CUDA object CMakeFiles/cmTC_0f82d.dir/CMakeCUDACompilerABI.cu.obj]
-  ignore line: [	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd   -Xcompiler=-v -x cu -c "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\share\cmake-3.17\Modules\CMakeCUDACompilerABI.cu" -o CMakeFiles\cmTC_0f82d.dir\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_0f82d.dir\ -FS]
+  ignore line: [Run Build Command(s):nmake /nologo cmTC_481bc\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\nmake.exe"  -f CMakeFiles\cmTC_481bc.dir\build.make /nologo -L                  CMakeFiles\cmTC_481bc.dir\build]
+  ignore line: [Building CUDA object CMakeFiles/cmTC_481bc.dir/CMakeCUDACompilerABI.cu.obj]
+  ignore line: [	"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe" -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /GR /EHsc"  -Xcompiler="-Zi -Ob0 -Od /RTC1" -Xcompiler=-MDd   -Xcompiler=-v -x cu -c "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\share\cmake-3.17\Modules\CMakeCUDACompilerABI.cu" -o CMakeFiles\cmTC_481bc.dir\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\cmTC_481bc.dir\ -FS]
   ignore line: [cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"]
   ignore line: [CMakeCUDACompilerABI.cu]
   ignore line: [cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"]
   ignore line: [CMakeCUDACompilerABI.cu]
   ignore line: [CMakeCUDACompilerABI.cu]
   ignore line: [cl : Wiersz polecenia warning D9002 : ignorowanie nieznanej opcji "-v"]
-  ignore line: [Linking CUDA executable cmTC_0f82d.exe]
-  ignore line: [	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_0f82d.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_0f82d.dir\CMakeCUDACompilerABI.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm97D2.tmp]
+  ignore line: [Linking CUDA executable cmTC_481bc.exe]
+  ignore line: [	"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_481bc.dir --rc="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\rc.exe" --mt="C:\PROGRA~2\Windows Kits\10\bin\10.0.19041.0\x86\mt.exe" --manifests  -- "C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx86\x64\link.exe" /nologo "CMakeFiles\cmTC_481bc.dir\CMakeCUDACompilerABI.cu.obj"  @C:\Users\Michal\AppData\Local\Temp\nm8E71.tmp]
   ignore line: [LINK : warning LNK4044: nierozpoznana opcja "/v"]
   ignore line: [ zignorowano]
-  ignore line: [   Trwa tworzenie biblioteki cmTC_0f82d.lib i obiektu cmTC_0f82d.exp]
+  ignore line: [   Trwa tworzenie biblioteki cmTC_481bc.lib i obiektu cmTC_481bc.exp]
   ignore line: [LINK : warning LNK4044: nierozpoznana opcja "/v"]
   ignore line: [ zignorowano]
   ignore line: [LINK : warning LNK4044: nierozpoznana opcja "/v"]
   ignore line: [ zignorowano]
-  ignore line: [   Trwa tworzenie biblioteki cmTC_0f82d.lib i obiektu cmTC_0f82d.exp]
+  ignore line: [   Trwa tworzenie biblioteki cmTC_481bc.lib i obiektu cmTC_481bc.exp]
   ignore line: []
   ignore line: []
   implicit libs: []
