@@ -1,0 +1,36 @@
+Compiling the CUDA compiler identification source file "CMakeCUDACompilerId.cu" failed.
+Compiler: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.5/bin/nvcc.exe 
+Build flags: 
+Id flags:  -v;--keep;--keep-dir;tmp
+
+The output was:
+1
+nvcc fatal   : Cannot find compiler 'cl.exe' in PATH
+
+
+Compiling the CUDA compiler identification source file "CMakeCUDACompilerId.cu" failed.
+Compiler: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.5/bin/nvcc.exe 
+Build flags: 
+Id flags:  -v;--keep;--keep-dir;tmp
+
+The output was:
+1
+nvcc fatal   : Cannot find compiler 'cl.exe' in PATH
+
+
+Determining if the CUDA compiler works failed with the following output:
+Change Dir: C:/Users/Michal/CLionProjects/TSP/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/MinGW/bin/mingw32-make.exe cmTC_35526/fast && C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_35526.dir\build.make CMakeFiles/cmTC_35526.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/Michal/CLionProjects/TSP/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CUDA object CMakeFiles/cmTC_35526.dir/main.cu.obj
+"C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\nvcc.exe"     -x cu -c C:\Users\Michal\CLionProjects\TSP\cmake-build-debug\CMakeFiles\CMakeTmp\main.cu -o CMakeFiles\cmTC_35526.dir\main.cu.obj
+nvcc fatal   : Cannot find compiler 'cl.exe' in PATH
+CMakeFiles\cmTC_35526.dir\build.make:84: recipe for target 'CMakeFiles/cmTC_35526.dir/main.cu.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_35526.dir/main.cu.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/Michal/CLionProjects/TSP/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:140: recipe for target 'cmTC_35526/fast' failed
+mingw32-make.exe: *** [cmTC_35526/fast] Error 2
+
+
+
