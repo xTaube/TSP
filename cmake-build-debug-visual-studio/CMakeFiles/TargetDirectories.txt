@@ -1,3 +1,0 @@
-C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/edit_cache.dir
-C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/TSP.dir
-C:/Users/Michal/CLionProjects/TSP/cmake-build-debug-visual-studio/CMakeFiles/rebuild_cache.dir
