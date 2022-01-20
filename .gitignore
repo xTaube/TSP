@@ -36,3 +36,8 @@
 *.exe
 *.out
 *.app
+
+/venv
+/cmake-build-debug-visual-studio
+/cmake-build-debug
+/.idea
