@@ -145,7 +145,7 @@ float nn_algorithm_gpu(vector<city> vec, long long int starting_point) {
     while (sorted_cities.size() != vec.size()) {
         calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
         find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, n);
+        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
 
         cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
