@@ -2,40 +2,53 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-
+#include <cstdlib>
+#include <random>
+#include <atomic>
+#include <chrono>
+#include <cassert>
 using namespace std;
 
-#define MAX_X 10
-#define MAX_Y 10
+#define MAX_X 1000
+#define MAX_Y 1000
+#define MAX_NO_POINTS MAX_X * MAX_Y
 #define MAX_DIST MAX_X*MAX_X + MAX_Y*MAX_Y + 1
 #define THREAD_SIZE 512
 #define SHMEM_SIZE 512
 
 struct city {
-    float posX;
-    float posY;
+    int posX;
+    int posY;
     bool visited;
 };
 
 
-__global__ void calculate_dist(city *cities, float *dist, unsigned short starting_point, unsigned short n) {
-    unsigned short tid = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void calculate_dist(city *cities, double *dist, long long int starting_point, long long n) {
+    long long tid = blockIdx.x * blockDim.x + threadIdx.x;
+    __shared__ city sh_cities[SHMEM_SIZE];
+    __shared__ city sh_starting_city[SHMEM_SIZE];
+    double temp;
     if (tid < n) {
         if (tid == 0) cities[starting_point].visited = true;
-        city starting_city = cities[starting_point];
-        if (!cities[tid].visited && tid != starting_point) {
-            dist[tid] = sqrt(
-                    pow(cities[tid].posX - starting_city.posX, 2) + pow(starting_city.posY - cities[tid].posY, 2)
-            );
+        sh_cities[threadIdx.x] = cities[tid];
+        sh_starting_city[threadIdx.x] = cities[starting_point];
+        __syncthreads();
+        if (!sh_cities[threadIdx.x].visited) {
+            double x = (double)sh_cities[threadIdx.x].posX-(double)sh_starting_city[threadIdx.x].posX;
+            double y = (double)sh_cities[threadIdx.x].posY-(double)sh_starting_city[threadIdx.x].posY;
+            temp = sqrt(x*x + y*y);
+            dist[tid] = temp;
+            __syncthreads();
         } else dist[tid] = MAX_DIST;
     }
 }
 
-__global__ void find_min_reduction(float *dist, float *dist_r, unsigned short n) {
-    __shared__ float sh_dist[SHMEM_SIZE];
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void find_min_reduction(double *dist, double *dist_r, long long int n) {
+    __shared__ double sh_dist[SHMEM_SIZE];
+    long long int tid = blockIdx.x * blockDim.x + threadIdx.x;
     if (tid < n)
         sh_dist[threadIdx.x] = dist[tid];
+    else sh_dist[threadIdx.x] = MAX_DIST;
     __syncthreads();
 
     for (int s = blockDim.x / 2; s > 0; s /= 2) {
@@ -49,9 +62,9 @@ __global__ void find_min_reduction(float *dist, float *dist_r, unsigned short n)
 }
 
 
-__global__ void sum_reduce(float *dist_vec, float *dist_sum_r, const int n) {
-    __shared__ float partial_sum[SHMEM_SIZE];
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void sum_reduce(double *dist_vec, double *dist_sum_r, const long long int n) {
+    __shared__ double partial_sum[SHMEM_SIZE];
+    long long int tid = blockIdx.x * blockDim.x + threadIdx.x;
     if (tid < n)
         partial_sum[threadIdx.x] = dist_vec[tid];
     else partial_sum[threadIdx.x] = 0;
@@ -67,49 +80,56 @@ __global__ void sum_reduce(float *dist_vec, float *dist_sum_r, const int n) {
 }
 
 
-city random_city() {
-    city rand_city{};
-    rand_city.posX = rand() % MAX_X;
-    rand_city.posY = rand() % MAX_Y;
-    rand_city.visited = false;
-    return rand_city;
-}
-
-
-vector<city> generate_cities(unsigned short no_cities) {
-    vector<city> cities(no_cities);
-    generate(cities.begin(), cities.end(), random_city);
+vector<city> generate_cities(long long int no_cities) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<> distribution(1, MAX_X);
+    vector<city> cities;
+    for (long long int i = 0; i < no_cities; i++) {
+        bool unique_city;
+        city c{};
+        do {
+            unique_city = true;
+            c.posX = (int)ceil(distribution(gen));
+            c.posY = (int)ceil(distribution(gen));
+            for (auto &e : cities) {
+                if (e.posX == c.posX && e.posY == c.posY) unique_city = false;
+            }
+        } while (!unique_city);
+        c.visited = false;
+        cities.push_back(c);
+    }
     return cities;
 }
 
 
-float distance(city cityA, city cityB) {
+double distance(city cityA, city cityB) {
     return sqrt(pow(cityA.posX - cityB.posX, 2) + pow(cityA.posY - cityB.posY, 2));
 }
 
 
-float total_distance(vector<city> vec) {
-    float total_dist = 0;
-    for (int i = 0; i < vec.size() - 1; i++)
+double total_distance(vector<city> vec) {
+    double total_dist = 0;
+    for (long long int i = 0; i < vec.size() - 1; i++)
         total_dist += distance(vec[i], vec[i + 1]);
 
     return total_dist;
 }
 
 
-float nn_algorithm_gpu(vector<city> vec, unsigned short starting_point) {
+float nn_algorithm_gpu(vector<city> vec, long long int starting_point) {
     int n = vec.size();
     size_t cities_bytes = n * sizeof(city);
-    size_t dist_bytes = n * sizeof(float);
+    size_t dist_bytes = n * sizeof(double);
 
     vector<city> sorted_cities;
-    vector<float> h_dist(n);
-    vector<float> h_dist_r(n);
-    vector<float> h_min_dists;
-    vector<float> h_total_dist(n);
+    vector<double> h_dist(n);
+    vector<double> h_dist_r(n);
+    vector<double> h_min_dists;
+    vector<double> h_total_dist(n);
     city *d_cities;
-    float *d_dist;
-    float *d_dist_r;
+    double *d_dist;
+    double *d_dist_r;
 
     cudaMalloc(&d_cities, cities_bytes);
     cudaMalloc(&d_dist, dist_bytes);
@@ -119,13 +139,13 @@ float nn_algorithm_gpu(vector<city> vec, unsigned short starting_point) {
 
     int threads = THREAD_SIZE;
     int blocks = (int) ceil((float) n / (float) threads);
-    int current_index = starting_point;
+    auto current_index = starting_point;
     sorted_cities.push_back(vec[current_index]);
 
     while (sorted_cities.size() != vec.size()) {
         calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
         find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
+        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, n);
 
         cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
@@ -141,15 +161,15 @@ float nn_algorithm_gpu(vector<city> vec, unsigned short starting_point) {
 
     sorted_cities.push_back(sorted_cities[0]);
     h_min_dists.push_back(distance(sorted_cities[n - 1], sorted_cities[0]));
-    float *d_min_dists;
-    float *d_min_dist_sum;
+    double *d_min_dists;
+    double *d_min_dist_sum;
     cudaMalloc(&d_min_dists, dist_bytes);
     cudaMalloc(&d_min_dist_sum, dist_bytes);
 
     cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
 
     sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
-    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
+    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, n);
 
     cudaMemcpy(h_total_dist.data(), d_min_dist_sum, dist_bytes, cudaMemcpyDeviceToHost);
 
@@ -160,16 +180,16 @@ float nn_algorithm_gpu(vector<city> vec, unsigned short starting_point) {
 }
 
 
-float nn_algorithm_cpu(vector<city> vec, unsigned short starting_point) {
+double nn_algorithm_cpu(vector<city> vec, long long int starting_point) {
     vector<city> result_vec;
-    float max_dist = sqrt(pow(MAX_X, 2) + pow(MAX_Y, 2));
+    double max_dist = sqrt(pow(MAX_X, 2) + pow(MAX_Y, 2));
     auto current_index = starting_point;
     vec[current_index].visited = true;
     result_vec.push_back(vec[current_index]);
     while (result_vec.size() != vec.size()) {
-        float min_dist = max_dist;
-        unsigned short min_dist_index;
-        for (int i = 0; i < vec.size(); i++) {
+        double min_dist = max_dist;
+        long long int min_dist_index;
+        for (long long int i = 0; i < vec.size(); i++) {
             if (i == current_index || vec[i].visited)
                 continue;
             auto dist = distance(vec[current_index], vec[i]);
@@ -188,12 +208,36 @@ float nn_algorithm_cpu(vector<city> vec, unsigned short starting_point) {
 
 
 int main() {
-    unsigned short n = 5;
+    long long int n;
+    cudaEvent_t start_gpu;
+    cudaEvent_t end_gpu;
+    cudaEventCreate(&start_gpu);
+    cudaEventCreate(&end_gpu);
+    cout << "n: " << endl;
+    cin >> n;
     auto cities = generate_cities(n);
-    auto total_dist_cpu = nn_algorithm_cpu(cities, 3);
-    cout << "total distance " << total_dist_cpu << endl;
-    auto total_dist_gpu = nn_algorithm_gpu(cities, 3);
-    cout << "total distance gpu: " << total_dist_gpu << endl;
+    cout << "wygenerowano" << endl;
 
+    auto start = chrono::high_resolution_clock::now();
+    auto total_dist_cpu = nn_algorithm_cpu(cities, 3);
+    auto end = chrono::high_resolution_clock::now();
+    auto cpu_tps_time = 0.000001*chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+    cout << "total distance " << total_dist_cpu << endl;
+    cout << "CPU runtime: " << cpu_tps_time/1000 << "seconds"<< endl;
+
+    cudaEventRecord(start_gpu);
+    auto total_dist_gpu = nn_algorithm_gpu(cities, 3);
+    cudaEventRecord(end_gpu);
+    cudaEventSynchronize(end_gpu);
+
+    float sorting_ms = 0;
+    cudaEventElapsedTime(&sorting_ms, start_gpu, end_gpu);
+    double gpu_tps_time = sorting_ms;
+
+    cout << "total distance gpu: " << total_dist_gpu << endl;
+    cout << "GPU runtime: " << gpu_tps_time/1000 << " seconds"<< endl;
+
+    cout << "GPU did runtime test: " << cpu_tps_time/gpu_tps_time << " faster" << endl;
     return 0;
 }
