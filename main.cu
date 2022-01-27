@@ -159,7 +159,7 @@ double nn_algorithm_cpu(vector<city> vec, long long int starting_point) {
         result_vec.push_back(vec[current_index]);
     }
     result_vec.push_back(result_vec[0]);
-    export_cities_to_csv(result_vec, "sorted_cities_cpu");
+    //export_cities_to_csv(result_vec, "sorted_cities_cpu");
     return total_distance(result_vec);
 }
 
@@ -204,26 +204,26 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     sorted_cities.push_back(cities[current_index]);
 
     cudaEventRecord(start_gpu);
-    while (sorted_cities.size() != cities.size()) {
-        calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
-        find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
-
-        cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
-        cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
-        h_min_dists.push_back(h_dist_r[0]);
-        auto it = find(h_dist.begin(), h_dist.end(), h_dist_r[0]);
-        current_index = it - h_dist.begin();
-        sorted_cities.push_back(cities[current_index]);
-    }
-
-    sorted_cities.push_back(sorted_cities[0]);
-    h_min_dists.push_back(distance(sorted_cities[n - 1], sorted_cities[0]));
-
-    cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
-
-    sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
-    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
+//    while (sorted_cities.size() != cities.size()) {
+//        calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
+//        find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
+//        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
+//
+//        cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
+//        cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
+//        h_min_dists.push_back(h_dist_r[0]);
+//        auto it = find(h_dist.begin(), h_dist.end(), h_dist_r[0]);
+//        current_index = it - h_dist.begin();
+//        sorted_cities.push_back(cities[current_index]);
+//    }
+//
+//    sorted_cities.push_back(sorted_cities[0]);
+//    h_min_dists.push_back(distance(sorted_cities[n - 1], sorted_cities[0]));
+//
+//    cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
+//
+//    sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
+//    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
 
     cudaEventRecord(end_gpu);
     cudaEventSynchronize(end_gpu);
@@ -242,10 +242,10 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     nn_algorithm_times.cpu_time = (double)chrono::duration_cast<chrono::nanoseconds>(end - start).count()/1000000000;
     nn_algorithm_times.time_diff = nn_algorithm_times.cpu_time/nn_algorithm_times.gpu_time;
 
-    cout << "CPU total distance: " << total_dist_cpu << endl;
+   // cout << "CPU total distance: " << total_dist_cpu << endl;
     cout << "GPU total distance: " << h_total_dist[0] << endl;
 
-    export_cities_to_csv(sorted_cities, "sorted_cities_gpu");
+    //export_cities_to_csv(sorted_cities, "sorted_cities_gpu");
 
     cudaFree(d_cities);
     cudaFree(d_dist);
@@ -259,7 +259,9 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
 int main() {
     long long int n;
     cout << "n: " << endl;
-    cin >> n;
+
+    n=10086;
+    cout<< n<<endl;
     auto cities = generate_cities(n);
     unsigned int starting_point = rand()%n;
     cout << "wygenerowano" << endl;
@@ -269,5 +271,34 @@ int main() {
     cout << "CPU runtime: " << nn_algorithm_times.cpu_time << "seconds"<< endl;
     cout << "GPU runtime: " << nn_algorithm_times.gpu_time << " seconds"<< endl;
     cout << "GPU did runtime test: " << nn_algorithm_times.time_diff << " faster" << endl;
+
+    for (int i =110000;i<120001;i=i+10000)
+    {
+        n=i;
+        cout<< n<<endl;
+        cities = generate_cities(n);
+        starting_point = rand()%n;
+        cout << "wygenerowano" << endl;
+
+        nn_algorithm_times = compere_nn_algorithm(cities, starting_point);
+
+        cout << "CPU runtime: " << nn_algorithm_times.cpu_time << "seconds"<< endl;
+        cout << "GPU runtime: " << nn_algorithm_times.gpu_time << " seconds"<< endl;
+        cout << "GPU did runtime test: " << nn_algorithm_times.time_diff << " faster" << endl;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return 0;
 }
