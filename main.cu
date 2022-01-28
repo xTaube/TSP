@@ -207,7 +207,7 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     while (sorted_cities.size() != cities.size()) {
         calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
         find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
+        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, n);
 
         cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
@@ -223,7 +223,7 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
 
     sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
-    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
+    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, n);
 
     cudaEventRecord(end_gpu);
     cudaEventSynchronize(end_gpu);
@@ -261,7 +261,7 @@ int main() {
     cout << "n: " << endl;
     cin >> n;
     auto cities = generate_cities(n);
-    unsigned int starting_point = rand()%n;
+    unsigned int starting_point = 1;
     cout << "wygenerowano" << endl;
 
     auto nn_algorithm_times = compere_nn_algorithm(cities, starting_point);
