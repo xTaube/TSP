@@ -21,12 +21,12 @@ def check(l1, l2):
             print(f'not equal index {i}')
 
 if __name__ == "__main__":
-    gpu_points = read_csv("sorted_cities_gpu.csv")
-    cpu_points = read_csv("sorted_cities_cpu.csv")
+    gpu_points = read_csv("cities-csv/sorted_cities_gpu.csv")
+    cpu_points = read_csv("cities-csv/sorted_cities_cpu.csv")
     check(gpu_points, cpu_points)
     fig, ax = plt.subplots()
     line, = ax.plot(*zip(*gpu_points))
     x, y = zip(*gpu_points)
     ax.scatter(x, y)
-    anim = FuncAnimation(fig, update, frames=len(gpu_points)+1, fargs=(x, y), interval=1000)
+    anim = FuncAnimation(fig, update, frames=len(gpu_points)+1, fargs=(x, y), interval=100)
     plt.show()

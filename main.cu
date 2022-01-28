@@ -8,18 +8,18 @@
 #include <chrono>
 #include <cassert>
 #include <fstream>
+#include <sstream>
 using namespace std;
 
 #define MAX_X 1000
 #define MAX_Y 1000
-#define MAX_NO_POINTS MAX_X * MAX_Y
 #define MAX_DIST MAX_X*MAX_X + MAX_Y*MAX_Y + 1
-#define THREAD_SIZE 512
-#define SHMEM_SIZE 512
+#define THREAD_SIZE 1024
+#define SHMEM_SIZE 1024
 
 struct city {
-    int posX;
-    int posY;
+    double posX;
+    double posY;
     bool visited;
 };
 
@@ -41,8 +41,8 @@ __global__ void calculate_dist(city *cities, double *dist, long long int startin
         sh_starting_city[threadIdx.x] = cities[starting_point];
         __syncthreads();
         if (!sh_cities[threadIdx.x].visited) {
-            int x = sh_cities[threadIdx.x].posX-sh_starting_city[threadIdx.x].posX;
-            int y = sh_cities[threadIdx.x].posY-sh_starting_city[threadIdx.x].posY;
+            auto x = sh_cities[threadIdx.x].posX-sh_starting_city[threadIdx.x].posX;
+            auto y = sh_cities[threadIdx.x].posY-sh_starting_city[threadIdx.x].posY;
             temp = x*x + y*y;
             dist[tid] = temp;
             __syncthreads();
@@ -89,7 +89,7 @@ __global__ void sum_reduce(double *dist_vec, double *dist_sum_r, const long long
 
 void export_cities_to_csv(vector<city> &cities, string filename){
     ofstream file;
-    file.open("../"+filename+".csv");
+    file.open("../cities-csv/"+filename+".csv");
     if(file.is_open()){
         for(auto &e : cities){
             file << e.posX << "," << e.posY << "\n";
@@ -109,8 +109,8 @@ vector<city> generate_cities(long long int no_cities) {
         city c{};
         do {
             unique_city = true;
-            c.posX = (int)ceil(distribution(gen));
-            c.posY = (int)ceil(distribution(gen));
+            c.posX = (double)ceil(distribution(gen));
+            c.posY = (double)ceil(distribution(gen));
             for (auto &e : cities) {
                 if (e.posX == c.posX && e.posY == c.posY) unique_city = false;
             }
@@ -207,7 +207,7 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     while (sorted_cities.size() != cities.size()) {
         calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
         find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, n);
+        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
 
         cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
@@ -256,18 +256,65 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     return nn_algorithm_times;
 }
 
+
+vector<city> load_cities_from_file(string filename){
+    vector<city> cities;
+    ifstream file;
+    file.open("../ready-made-points-distribution/"+filename+".txt");
+    if(file.is_open()){
+        cout << "file opened" << endl;
+        string line;
+        while(!file.eof()){
+            getline(file, line);
+            city c {};
+            c.posX = stod(line.substr(0, line.find(",")));
+            c.posY = stod(line.substr(line.find(',')+1, line.find('\n')));
+            c.visited = false;
+            cities.push_back(c);
+        }
+        file.close();
+    }
+    return cities;
+}
+
+
 int main() {
-    long long int n;
-    cout << "n: " << endl;
-    cin >> n;
-    auto cities = generate_cities(n);
-    unsigned int starting_point = 1;
-    cout << "wygenerowano" << endl;
+    vector<city> cities;
+
+    char c;
+    cout << "Generate cities - g, Select ready-made distribution - r" << endl;
+    cin >> c;
+    switch(c){
+        case 'g': long long n;
+                  cout << "Pass number of cities" << endl;
+                  cin >> n;
+                  cities = generate_cities(n);
+                  break;
+        case 'r': char ch;
+                  cout << "Cross - q, Circle inside circle - w, Three circles - e, Two circles - r" << endl;
+                  cin >> ch;
+                  switch(ch){
+                      case 'q': cities = load_cities_from_file("cross");
+                                break;
+                      case 'w': cities = load_cities_from_file("inside_circle");
+                                break;
+                      case 'e': cities = load_cities_from_file("three_circles");
+                                break;
+                      case 'r': cities = load_cities_from_file("two_circles");
+                                break;
+                      default: return 0;
+                  }
+                  break;
+        default: return 0;
+    }
+
+    unsigned int starting_point = 0;
 
     auto nn_algorithm_times = compere_nn_algorithm(cities, starting_point);
 
     cout << "CPU runtime: " << nn_algorithm_times.cpu_time << "seconds"<< endl;
     cout << "GPU runtime: " << nn_algorithm_times.gpu_time << " seconds"<< endl;
     cout << "GPU did runtime test: " << nn_algorithm_times.time_diff << " faster" << endl;
+
     return 0;
 }
