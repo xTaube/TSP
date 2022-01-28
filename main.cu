@@ -41,9 +41,9 @@ __global__ void calculate_dist(city *cities, double *dist, long long int startin
         sh_starting_city[threadIdx.x] = cities[starting_point];
         __syncthreads();
         if (!sh_cities[threadIdx.x].visited) {
-            double x = (double)sh_cities[threadIdx.x].posX-(double)sh_starting_city[threadIdx.x].posX;
-            double y = (double)sh_cities[threadIdx.x].posY-(double)sh_starting_city[threadIdx.x].posY;
-            temp = sqrt(x*x + y*y);
+            int x = sh_cities[threadIdx.x].posX-sh_starting_city[threadIdx.x].posX;
+            int y = sh_cities[threadIdx.x].posY-sh_starting_city[threadIdx.x].posY;
+            temp = x*x + y*y;
             dist[tid] = temp;
             __syncthreads();
         } else dist[tid] = MAX_DIST;
@@ -211,7 +211,7 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
 
         cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
-        h_min_dists.push_back(h_dist_r[0]);
+        h_min_dists.push_back(sqrt(h_dist_r[0]));
         auto it = find(h_dist.begin(), h_dist.end(), h_dist_r[0]);
         current_index = it - h_dist.begin();
         sorted_cities.push_back(cities[current_index]);
