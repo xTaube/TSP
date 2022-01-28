@@ -14,8 +14,8 @@ using namespace std;
 #define MAX_Y 1000
 #define MAX_NO_POINTS MAX_X * MAX_Y
 #define MAX_DIST MAX_X*MAX_X + MAX_Y*MAX_Y + 1
-#define THREAD_SIZE 512
-#define SHMEM_SIZE 512
+#define THREAD_SIZE 1024
+#define SHMEM_SIZE 1024
 
 struct city {
     int posX;
@@ -204,26 +204,26 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     sorted_cities.push_back(cities[current_index]);
 
     cudaEventRecord(start_gpu);
-//    while (sorted_cities.size() != cities.size()) {
-//        calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
-//        find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
-//        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
-//
-//        cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
-//        cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
-//        h_min_dists.push_back(h_dist_r[0]);
-//        auto it = find(h_dist.begin(), h_dist.end(), h_dist_r[0]);
-//        current_index = it - h_dist.begin();
-//        sorted_cities.push_back(cities[current_index]);
-//    }
-//
-//    sorted_cities.push_back(sorted_cities[0]);
-//    h_min_dists.push_back(distance(sorted_cities[n - 1], sorted_cities[0]));
-//
-//    cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
-//
-//    sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
-//    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
+    while (sorted_cities.size() != cities.size()) {
+        calculate_dist<<<blocks, threads>>>(d_cities, d_dist, current_index, n);
+        find_min_reduction<<<blocks, threads>>>(d_dist, d_dist_r, n);
+        find_min_reduction<<<1, threads>>>(d_dist_r, d_dist_r, blocks);
+
+        cudaMemcpy(h_dist.data(), d_dist, dist_bytes, cudaMemcpyDeviceToHost);
+        cudaMemcpy(h_dist_r.data(), d_dist_r, dist_bytes, cudaMemcpyDeviceToHost);
+        h_min_dists.push_back(h_dist_r[0]);
+        auto it = find(h_dist.begin(), h_dist.end(), h_dist_r[0]);
+        current_index = it - h_dist.begin();
+        sorted_cities.push_back(cities[current_index]);
+    }
+
+    sorted_cities.push_back(sorted_cities[0]);
+    h_min_dists.push_back(distance(sorted_cities[n - 1], sorted_cities[0]));
+
+    cudaMemcpy(d_min_dists, h_min_dists.data(), dist_bytes, cudaMemcpyHostToDevice);
+
+    sum_reduce<<<blocks, threads>>>(d_min_dists, d_min_dist_sum, n);
+    sum_reduce<<<1, threads>>>(d_min_dist_sum, d_min_dist_sum, blocks);
 
     cudaEventRecord(end_gpu);
     cudaEventSynchronize(end_gpu);
@@ -237,7 +237,7 @@ times compere_nn_algorithm(vector<city> cities, unsigned int starting_point){
     set_visited_flag_to_false(cities);
 
     auto start = chrono::high_resolution_clock::now();
-    auto total_dist_cpu = nn_algorithm_cpu(cities, starting_point);
+   // auto total_dist_cpu = nn_algorithm_cpu(cities, starting_point);
     auto end = chrono::high_resolution_clock::now();
     nn_algorithm_times.cpu_time = (double)chrono::duration_cast<chrono::nanoseconds>(end - start).count()/1000000000;
     nn_algorithm_times.time_diff = nn_algorithm_times.cpu_time/nn_algorithm_times.gpu_time;
@@ -272,7 +272,7 @@ int main() {
     cout << "GPU runtime: " << nn_algorithm_times.gpu_time << " seconds"<< endl;
     cout << "GPU did runtime test: " << nn_algorithm_times.time_diff << " faster" << endl;
 
-    for (int i =110000;i<120001;i=i+10000)
+    for (int i =500000;i<1000001;i=i+100000)
     {
         n=i;
         cout<< n<<endl;
